@@ -70,8 +70,6 @@ a:hover { color: var(--gold-light); }
   justify-content: space-between;
   padding: 14px clamp(16px, 4vw, 36px);
   background: rgba(10, 10, 10, 0.72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
 .brand {
@@ -99,6 +97,28 @@ a:hover { color: var(--gold-light); }
   color: var(--text-dim);
 }
 .topbar-link:hover { color: var(--gold); }
+.topbar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.lucy-btn {
+  background: none;
+  border: none;
+  color: var(--gold-light);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  opacity: 0.25;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.lucy-btn:hover { opacity: 0.7; transform: rotate(30deg); }
+.lucy-btn.active { opacity: 1; animation: lucy-spin 2s linear infinite; }
+@keyframes lucy-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .lucy-btn.active { animation: none; }
+}
 
 /* ---------- Shell ---------- */
 .shell {
@@ -175,8 +195,6 @@ a:hover { color: var(--gold-light); }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   padding: clamp(22px, 4vw, 40px);
   animation: rise 0.5s ease-out;
 }

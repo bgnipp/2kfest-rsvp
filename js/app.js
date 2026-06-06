@@ -5,14 +5,19 @@
   // ----------------------------------------------------------------------
   // CONFIG
   // ----------------------------------------------------------------------
-  // Where RSVPs are sent. Leave blank to run in "demo" mode (no network call;
-  // submissions are saved to localStorage and shown on screen).
+  // RSVPs are saved to a Google Sheet via a Google Apps Script Web App.
+  // To turn it on:
+  //   1. Open the destination Google Sheet → Extensions → Apps Script.
+  //   2. Paste the contents of apps-script/Code.gs (in this repo) and Save.
+  //   3. Deploy → New deployment → type "Web app" →
+  //        Execute as: Me   |   Who has access: Anyone
+  //   4. Copy the Web app URL (…/exec) and paste it below.
+  // See README.md ("Collecting RSVPs") for the full walkthrough.
   //
-  //   Formspree:   "https://formspree.io/f/XXXXXXXX"
-  //   Apps Script: your deployed Web App URL (doPost handler)
-  //   Other:       any endpoint that accepts a JSON POST
+  // Leave FORM_ENDPOINT blank to run in "demo" mode (no network call;
+  // submissions are saved to this browser's localStorage and shown on screen).
   const CONFIG = {
-    FORM_ENDPOINT: "",
+    FORM_ENDPOINT: "", // ← paste your Apps Script /exec URL here
     EVENT_DATES: "July 17–20, 2026",
   };
 
@@ -310,17 +315,32 @@
     };
   }
 
-  async function submitData(data) {
-    if (!CONFIG.FORM_ENDPOINT) {
+  // Keep a local copy on the device as a backup (cheap insurance in case the
+  // network call ever fails — RSVPs still aren't lost from this browser).
+  function backupLocally(data) {
+    try {
       const all = JSON.parse(localStorage.getItem("2kfest_rsvps") || "[]");
       all.push(data);
       localStorage.setItem("2kfest_rsvps", JSON.stringify(all));
-      return { demo: true };
+    } catch (_) {
+      /* localStorage unavailable (private mode, etc.) — ignore */
     }
+  }
+
+  async function submitData(data) {
+    backupLocally(data);
+
+    if (!CONFIG.FORM_ENDPOINT) return { demo: true };
+
+    // NOTE: we POST as text/plain (not application/json) on purpose. That keeps
+    // it a "simple request" so the browser skips the CORS preflight (OPTIONS),
+    // which Google Apps Script Web Apps don't answer. The script JSON.parses the
+    // raw body itself (see apps-script/Code.gs).
     const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(data),
+      redirect: "follow",
     });
     if (!res.ok) throw new Error(`Submit failed (${res.status})`);
     return res.json().catch(() => ({}));

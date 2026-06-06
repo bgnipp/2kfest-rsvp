@@ -32,23 +32,44 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-## Wiring up submissions
+## Collecting RSVPs (Google Sheet, no credentials in the repo)
 
-By default the form runs in **demo mode**: submissions are saved to
-`localStorage` and shown on the confirmation screen (no backend needed).
+RSVPs are saved to a **Google Sheet** via a **Google Apps Script Web App**. The
+script runs on Google's servers under the sheet owner's account, so the website
+never holds any secret — exactly the "public endpoint owned by another account"
+approach. The script lives in [`apps-script/Code.gs`](apps-script/Code.gs).
 
-To collect real RSVPs, set `FORM_ENDPOINT` in `js/app.js`:
+**One-time setup (the sheet owner does this):**
+
+1. Create/open the destination Google Sheet.
+2. **Extensions → Apps Script**. Delete the boilerplate, paste the contents of
+   `apps-script/Code.gs`, and Save.
+3. **Deploy → New deployment → Web app**:
+   - **Execute as:** Me
+   - **Who has access:** Anyone
+4. Authorize when prompted, then copy the **Web app URL** (ends in `/exec`).
+5. Paste that URL into `FORM_ENDPOINT` in `js/app.js` and push:
 
 ```js
 const CONFIG = {
-  FORM_ENDPOINT: "https://formspree.io/f/XXXXXXXX", // or a Google Apps Script Web App URL
+  FORM_ENDPOINT: "https://script.google.com/macros/s/XXXXXXXX/exec",
   ...
 };
 ```
 
-The form sends a JSON `POST` with all answers. Any endpoint that accepts JSON works
-([Formspree](https://formspree.io), a Google Apps Script `doPost`, a serverless
-function, etc.).
+That's it — new RSVPs append as rows on a tab called `RSVPs` (headers are
+created automatically). You can sanity-check the deployment by opening the
+`/exec` URL in a browser; it returns `{"ok":true,...}`.
+
+**Notes**
+- The site POSTs as `text/plain` on purpose so the browser skips the CORS
+  preflight that Apps Script Web Apps don't answer; the script parses the JSON
+  body itself.
+- After editing `Code.gs`, re-deploy via **Deploy → Manage deployments → edit →
+  New version** to keep the same `/exec` URL.
+- Until `FORM_ENDPOINT` is set, the form runs in **demo mode** (saved to the
+  visitor's `localStorage` and shown on the confirmation screen). A local backup
+  copy is always kept on-device even when a real endpoint is configured.
 
 ## Deploy
 

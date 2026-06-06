@@ -1,7 +1,7 @@
 # 2K Fest July RSVP
 
 An RSVP & signup form for **[2K Fest](https://2kfest.com)** — the second 2K musicians'
-retreat / mini-festival / epic party, **July 17–19, 2026** in Murphys, CA.
+retreat / mini-festival / epic party, **July 17–20, 2026** in Murphys, CA.
 
 It replicates the original Google Form, restyled to match the 2kfest.com look
 (dark + gold, Bebas Neue / Rye / DM Sans, festival photos) with some UX upgrades:

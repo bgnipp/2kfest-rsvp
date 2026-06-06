@@ -13,7 +13,7 @@
   //   Other:       any endpoint that accepts a JSON POST
   const CONFIG = {
     FORM_ENDPOINT: "",
-    EVENT_DATES: "July 17–19, 2026",
+    EVENT_DATES: "July 17–20, 2026",
   };
 
   const { INSTRUMENTS, ROLES } = window.FORM_DATA;

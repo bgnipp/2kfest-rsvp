@@ -159,6 +159,16 @@
     if (field) field.classList.remove("invalid");
   }
 
+  // Pragmatic email check: one @, a dot in the domain, no spaces.
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+  }
+
+  // Clear a field's error as soon as the user starts correcting it.
+  form.addEventListener("input", (e) => {
+    if (e.target.name) clearError(e.target.name);
+  });
+
   function validateStep(idx) {
     let ok = true;
 
@@ -177,13 +187,21 @@
     }
 
     if (idx === 3) {
-      const name = $("#name");
-      const phone = $("#phone");
-      const email = $("#email");
-      if (!name.value.trim()) { showError("name", "We need your name."); ok = false; }
-      if (!phone.value.trim()) { showError("phone", "We need a phone # for WhatsApp."); ok = false; }
-      if (!email.value.trim()) { showError("email", "Email required."); ok = false; }
-      else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim())) { showError("email", "That email looks off."); ok = false; }
+      const name = $("#name").value.trim();
+      const phone = $("#phone").value.trim();
+      const email = $("#email").value.trim();
+
+      if (!name) { showError("name", "We need your name."); ok = false; }
+      else if (name.length < 2) { showError("name", "That name looks too short."); ok = false; }
+
+      const digits = phone.replace(/\D/g, "");
+      if (!phone) { showError("phone", "We need a phone # for WhatsApp."); ok = false; }
+      else if (!/^\+?[\d\s().-]{7,}$/.test(phone) || digits.length < 10 || digits.length > 15) {
+        showError("phone", "Enter a valid phone number (at least 10 digits)."); ok = false;
+      }
+
+      if (!email) { showError("email", "Email required."); ok = false; }
+      else if (!isValidEmail(email)) { showError("email", "Hmm, that email doesn't look right."); ok = false; }
     }
     return ok;
   }

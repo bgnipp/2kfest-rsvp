@@ -41,20 +41,19 @@ a:hover { color: var(--gold-light); }
 .bg-layer {
   position: fixed;
   inset: 0;
-  background: url("../assets/poster.png") center / cover no-repeat;
-  filter: blur(28px) saturate(1.15);
+  background: url("../assets/poster.png") center top / cover no-repeat;
+  filter: blur(3px) saturate(1.12);
   z-index: -2;
-  transform: scale(1.18);
+  transform: scale(1.06);
 }
 .bg-scrim {
   position: fixed;
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(90% 60% at 15% 10%, rgba(46, 196, 182, 0.16), transparent 60%),
-    radial-gradient(90% 60% at 85% 20%, rgba(123, 92, 255, 0.16), transparent 60%),
-    radial-gradient(120% 80% at 50% -10%, rgba(224, 90, 51, 0.16), transparent 55%),
-    linear-gradient(to bottom, rgba(7, 7, 9, 0.82) 0%, rgba(7, 7, 9, 0.9) 45%, rgba(7, 7, 9, 0.97) 100%);
+    radial-gradient(90% 60% at 15% 10%, rgba(46, 196, 182, 0.14), transparent 60%),
+    radial-gradient(90% 60% at 85% 20%, rgba(123, 92, 255, 0.14), transparent 60%),
+    linear-gradient(to bottom, rgba(7, 7, 9, 0.5) 0%, rgba(7, 7, 9, 0.72) 35%, rgba(7, 7, 9, 0.92) 70%, rgba(7, 7, 9, 0.97) 100%);
 }
 
 /* ---------- Top bar ---------- */
@@ -105,51 +104,19 @@ a:hover { color: var(--gold-light); }
 }
 
 /* ---------- Hero ---------- */
-.hero { text-align: center; }
+.hero {
+  text-align: center;
+  padding-top: clamp(20px, 8vh, 90px);
+}
 .hero-kicker {
   font-family: var(--font-heading);
   letter-spacing: 4px;
   color: var(--gold);
   font-size: 1rem;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
 }
-
-/* ---------- Poster centerpiece ---------- */
-.poster {
-  position: relative;
-  width: min(440px, 86vw);
-  margin: 0 auto 28px;
-  border-radius: 18px;
-  padding: 5px;
-  background: linear-gradient(135deg, var(--sunset), var(--gold), var(--teal), #7b5cff, var(--sunset));
-  background-size: 300% 300%;
-  animation: poster-glow 9s linear infinite;
-  box-shadow: 0 0 60px rgba(46, 196, 182, 0.28), 0 24px 60px rgba(0, 0, 0, 0.6);
-}
-.poster::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 20px;
-  background: inherit;
-  background-size: 300% 300%;
-  filter: blur(22px);
-  opacity: 0.55;
-  z-index: -1;
-  animation: poster-glow 9s linear infinite;
-}
-.poster img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 14px;
-  transition: transform 0.4s ease;
-}
-.poster:hover img { transform: scale(1.015); }
-@keyframes poster-glow { to { background-position: 300% 300%; } }
-@media (prefers-reduced-motion: reduce) {
-  .poster, .poster::after { animation: none; }
-}
+.hero-sub, .hero-note, .hero-kicker { text-shadow: 0 2px 16px rgba(0, 0, 0, 0.75); }
 .hero-title {
   font-family: var(--font-heading);
   font-size: clamp(3rem, 11vw, 6rem);

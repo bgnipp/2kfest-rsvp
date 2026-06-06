@@ -34,6 +34,8 @@ python3 -m http.server 8000
 
 ## Collecting RSVPs (Google Sheet, no credentials in the repo)
 
+📊 **Submissions sheet:** [2kfest-rsvp (Google Sheet)](https://docs.google.com/spreadsheets/d/10zdsrbqW_HDsNRY1iWonDB74V4p5CC1eo8ZQHe_gfAo/edit?usp=sharing) — RSVPs land on the **`RSVPs`** tab.
+
 RSVPs are saved to a **Google Sheet** via a **Google Apps Script Web App**. The
 script runs on Google's servers under the sheet owner's account, so the website
 never holds any secret — exactly the "public endpoint owned by another account"

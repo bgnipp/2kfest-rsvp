@@ -45,6 +45,10 @@ a:hover { color: var(--gold-light); }
   filter: blur(3px) saturate(1.12);
   z-index: -2;
   transform: scale(1.06);
+  transition: opacity 0.45s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-layer { transition: none; }
 }
 .bg-scrim {
   position: fixed;

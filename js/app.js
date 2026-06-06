@@ -30,6 +30,35 @@
   let current = 0;
 
   // ----------------------------------------------------------------------
+  // Per-view backgrounds (photos from 2kfest.com) with a soft crossfade
+  // ----------------------------------------------------------------------
+  const BG = {
+    hero: "assets/poster.png",
+    steps: [
+      "assets/bg/reel_3.jpeg", // RSVP — aerial of the stage + pool at sunset
+      "assets/bg/reel_8.jpeg", // Music — sax players on stage
+      "assets/bg/reel_4.jpeg", // Participate — hot tub party
+      "assets/bg/reel_5.jpeg", // Contact — chill sunset by the pool
+    ],
+    success: "assets/bg/reel_9.jpeg", // celebratory: musician mid-song
+  };
+  const bgLayer = $("#bg-layer");
+  let currentBg = BG.hero;
+
+  // Preload so swaps don't flash the empty scrim.
+  Object.values(BG).flat().forEach((src) => { new Image().src = src; });
+
+  function setBg(src) {
+    if (!bgLayer || src === currentBg) return;
+    currentBg = src;
+    bgLayer.style.opacity = "0";
+    setTimeout(() => {
+      bgLayer.style.backgroundImage = `url("${src}")`;
+      bgLayer.style.opacity = "1";
+    }, 280);
+  }
+
+  // ----------------------------------------------------------------------
   // RENDER: instruments
   // ----------------------------------------------------------------------
   function renderInstruments() {
@@ -212,6 +241,7 @@
   function goTo(idx) {
     steps.forEach((s, i) => (s.hidden = i !== idx));
     current = idx;
+    setBg(BG.steps[idx] || BG.steps[0]);
     const pct = ((idx + 1) / steps.length) * 100;
     progressFill.style.width = pct + "%";
     progressItems.forEach((li, i) => {
@@ -326,6 +356,7 @@
       renderSummary(data);
       form.hidden = true;
       success.hidden = false;
+      setBg(BG.success);
       success.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       btn.disabled = false;

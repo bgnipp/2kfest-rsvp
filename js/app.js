@@ -17,7 +17,7 @@
   // Leave FORM_ENDPOINT blank to run in "demo" mode (no network call;
   // submissions are saved to this browser's localStorage and shown on screen).
   const CONFIG = {
-    FORM_ENDPOINT: "", // ← paste your Apps Script /exec URL here
+    FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbzKqbBUC3xqgGszJiPzbeVj1HvTQxLPdatQCyJXCjNIRiYbvXo7e_Wd1-Su0I0ChVJ7/exec",
     EVENT_DATES: "July 17–20, 2026",
   };
 

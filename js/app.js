@@ -34,16 +34,22 @@
 
   let current = 0;
 
+  // Step indices (DOM order of the fieldsets). Contact is now first.
+  const STEP = { contact: 0, rsvp: 1, music: 2, participate: 3 };
+
+  // Where decliners get sent. 🎵 Never gonna give you up…
+  const RICKROLL_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+
   // ----------------------------------------------------------------------
   // Per-view backgrounds (photos from 2kfest.com) with a soft crossfade
   // ----------------------------------------------------------------------
   const BG = {
     hero: "assets/poster.png",
     steps: [
+      "assets/bg/reel_5.jpeg", // Contact — chill sunset by the pool
       "assets/bg/reel_3.jpeg", // RSVP — aerial of the stage + pool at sunset
       "assets/bg/reel_8.jpeg", // Music — sax players on stage
       "assets/bg/reel_4.jpeg", // Participate — hot tub party
-      "assets/bg/reel_5.jpeg", // Contact — chill sunset by the pool
     ],
     success: "assets/bg/reel_9.jpeg", // celebratory: musician mid-song
   };
@@ -206,21 +212,7 @@
   function validateStep(idx) {
     let ok = true;
 
-    if (idx === 0) {
-      if (!$('input[name="attending"]:checked')) { showError("attending", "Please let us know."); ok = false; }
-      const attending = $('input[name="attending"]:checked');
-      const needsNights = attending && ["Yes", "Probably yes"].includes(attending.value);
-      if (needsNights && !$('input[name="nights"]:checked')) { showError("nights", "Pick your nights."); ok = false; }
-      const conn = $("#connection");
-      if (!conn.value.trim()) { showError("connection", "This one's required."); ok = false; }
-    }
-
-    if (idx === 1) {
-      const anyInst = $$('input[name="instruments"]').some((c) => c.checked);
-      if (!anyInst) { showError("instruments", "Pick at least one (the 'cool' option counts!)."); ok = false; }
-    }
-
-    if (idx === 3) {
+    if (idx === STEP.contact) {
       const name = $("#name").value.trim();
       const phone = $("#phone").value.trim();
       const email = $("#email").value.trim();
@@ -236,6 +228,26 @@
 
       if (!email) { showError("email", "Email required."); ok = false; }
       else if (!isValidEmail(email)) { showError("email", "Hmm, that email doesn't look right."); ok = false; }
+    }
+
+    if (idx === STEP.rsvp) {
+      const attending = $('input[name="attending"]:checked');
+      if (!attending) { showError("attending", "Please let us know."); return false; }
+      // A flat "No" is handled separately (recorded + rickrolled), so don't
+      // demand nights or connection from them.
+      if (attending.value === "No") return true;
+      const needsNights = ["Yes", "Probably yes"].includes(attending.value);
+      if (needsNights && !$('input[name="nights"]:checked')) { showError("nights", "Pick your nights."); ok = false; }
+      const connField = $("#connection").closest(".field");
+      const connVisible = connField && connField.style.display !== "none";
+      if (connVisible && !$("#connection").value.trim()) {
+        showError("connection", "This one's required."); ok = false;
+      }
+    }
+
+    if (idx === STEP.music) {
+      const anyInst = $$('input[name="instruments"]').some((c) => c.checked);
+      if (!anyInst) { showError("instruments", "Pick at least one (the 'cool' option counts!)."); ok = false; }
     }
     return ok;
   }
@@ -259,11 +271,42 @@
   form.addEventListener("click", (e) => {
     const action = e.target.dataset.action;
     if (action === "next") {
+      // Declined RSVP: record their (already-entered) contact + a negative RSVP,
+      // then send them on their way. 🎶
+      if (current === STEP.rsvp) {
+        const att = $('input[name="attending"]:checked');
+        if (att && att.value === "No") { handleDecline(e.target); return; }
+      }
       if (validateStep(current)) goTo(Math.min(current + 1, steps.length - 1));
     } else if (action === "prev") {
       goTo(Math.max(current - 1, 0));
     }
   });
+
+  // Save a "not coming" RSVP (contact info + attending=No, everything else
+  // blank) to the sheet, then redirect to the rickroll. Contact info was
+  // collected and validated on step 1, so it's already present.
+  async function handleDecline(btn) {
+    const data = collect();
+    data.attending = "No";
+    data.nights = "not coming";
+    data.connection = "";
+    data.instruments = [];
+    data.set = "";
+    data.other_performance = "";
+    data.roles = [];
+    data.prep = "";
+    data.contribute = "";
+
+    if (btn) { btn.disabled = true; btn.textContent = "…"; }
+    try {
+      await submitData(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      window.location.href = RICKROLL_URL;
+    }
+  }
 
   // Allow clicking progress steps to jump back to completed steps
   progressItems.forEach((li) => {
@@ -366,7 +409,10 @@
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!validateStep(3)) return;
+    // Re-validate every step; jump back to the first one with a problem.
+    for (let i = 0; i < steps.length; i++) {
+      if (!validateStep(i)) { goTo(i); return; }
+    }
     const btn = $("#submit-btn");
     const data = collect();
     btn.disabled = true;

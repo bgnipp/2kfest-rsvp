@@ -74,15 +74,45 @@
       <div class="progress" role="group" aria-label="Form progress">
         <div class="progress-bar"><span class="progress-fill" id="progress-fill"></span></div>
         <ol class="progress-steps" id="progress-steps">
-          <li data-step="0"><span class="dot">1</span><span class="lbl">RSVP</span></li>
-          <li data-step="1"><span class="dot">2</span><span class="lbl">Music</span></li>
-          <li data-step="2"><span class="dot">3</span><span class="lbl">Participate</span></li>
-          <li data-step="3"><span class="dot">4</span><span class="lbl">Contact</span></li>
+          <li data-step="0"><span class="dot">1</span><span class="lbl">Contact</span></li>
+          <li data-step="1"><span class="dot">2</span><span class="lbl">RSVP</span></li>
+          <li data-step="2"><span class="dot">3</span><span class="lbl">Music</span></li>
+          <li data-step="3"><span class="dot">4</span><span class="lbl">Participate</span></li>
         </ol>
       </div>
 
-      <!-- ---------- STEP 1: RSVP ---------- -->
+      <!-- ---------- STEP 1: CONTACT ---------- -->
       <fieldset class="step" data-step="0">
+        <legend class="step-title">Contact Info</legend>
+        <p class="step-desc">First things first — how do we reach you? This is for our WhatsApp group and to send out important info via email.</p>
+
+        <div class="field">
+          <label class="field-label" for="name">Your name <span class="req">*</span></label>
+          <input class="input" type="text" id="name" name="name" autocomplete="name" placeholder="First &amp; last" required />
+          <p class="error" data-error="name"></p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label class="field-label" for="phone">Phone # <span class="req">*</span></label>
+            <input class="input" type="tel" id="phone" name="phone" autocomplete="tel" placeholder="(510) 555-0123" required />
+            <p class="error" data-error="phone"></p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="email">Email <span class="req">*</span></label>
+            <input class="input" type="email" id="email" name="email" autocomplete="email" placeholder="you@email.com" required />
+            <p class="error" data-error="email"></p>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <span></span>
+          <button class="btn-primary" type="button" data-action="next">Next →</button>
+        </div>
+      </fieldset>
+
+      <!-- ---------- STEP 2: RSVP ---------- -->
+      <fieldset class="step" data-step="1" hidden>
         <legend class="step-title">Are you in?</legend>
         <p class="step-desc">2K Fest runs <strong>July 17–20, 2026</strong> in Murphys, CA.</p>
 
@@ -108,20 +138,20 @@
           <p class="error" data-error="nights"></p>
         </div>
 
-        <div class="field">
+        <div class="field" data-show-if="attending=Yes,Probably yes,Probably no">
           <label class="field-label" for="connection">Who invited you / what is your connection to 2K? <span class="req">*</span></label>
           <input class="input" type="text" id="connection" name="connection" placeholder="e.g. Bryan invited me — we play in a band together" required />
           <p class="error" data-error="connection"></p>
         </div>
 
         <div class="step-nav">
-          <span></span>
+          <button class="btn-ghost" type="button" data-action="prev">← Back</button>
           <button class="btn-primary" type="button" data-action="next">Next →</button>
         </div>
       </fieldset>
 
-      <!-- ---------- STEP 2: MUSIC ---------- -->
-      <fieldset class="step" data-step="1" hidden>
+      <!-- ---------- STEP 3: MUSIC ---------- -->
+      <fieldset class="step" data-step="2" hidden>
         <legend class="step-title">Music and Performances</legend>
         <p class="step-desc">Two fully-backlined stages, full PA, drums, keys, guitars, bass &amp; more. Everyone jams.</p>
 
@@ -151,8 +181,8 @@
         </div>
       </fieldset>
 
-      <!-- ---------- STEP 3: PARTICIPATION ---------- -->
-      <fieldset class="step" data-step="2" hidden>
+      <!-- ---------- STEP 4: PARTICIPATION ---------- -->
+      <fieldset class="step" data-step="3" hidden>
         <legend class="step-title">Participation</legend>
         <p class="step-desc">
           Are you interested in helping out in any of the following ways? This would mean
@@ -180,36 +210,6 @@
           </label>
           <p class="field-hint">Remember, the event is free, but that can only happen if everyone participates. 💛</p>
           <textarea class="input" id="contribute" name="contribute" rows="3" placeholder="Bring a dish, lead a meal, share gear, teach a workshop, help clean up…"></textarea>
-        </div>
-
-        <div class="step-nav">
-          <button class="btn-ghost" type="button" data-action="prev">← Back</button>
-          <button class="btn-primary" type="button" data-action="next">Next →</button>
-        </div>
-      </fieldset>
-
-      <!-- ---------- STEP 4: CONTACT ---------- -->
-      <fieldset class="step" data-step="3" hidden>
-        <legend class="step-title">Contact Info</legend>
-        <p class="step-desc">We need your contact info for our WhatsApp group and to send out important info via email.</p>
-
-        <div class="field">
-          <label class="field-label" for="name">Your name <span class="req">*</span></label>
-          <input class="input" type="text" id="name" name="name" autocomplete="name" placeholder="First &amp; last" required />
-          <p class="error" data-error="name"></p>
-        </div>
-
-        <div class="grid-2">
-          <div class="field">
-            <label class="field-label" for="phone">Phone # <span class="req">*</span></label>
-            <input class="input" type="tel" id="phone" name="phone" autocomplete="tel" placeholder="(510) 555-0123" required />
-            <p class="error" data-error="phone"></p>
-          </div>
-          <div class="field">
-            <label class="field-label" for="email">Email <span class="req">*</span></label>
-            <input class="input" type="email" id="email" name="email" autocomplete="email" placeholder="you@email.com" required />
-            <p class="error" data-error="email"></p>
-          </div>
         </div>
 
         <div class="step-nav">

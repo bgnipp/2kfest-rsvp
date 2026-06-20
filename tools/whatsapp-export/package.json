@@ -1,0 +1,14 @@
+{
+  "name": "2kfest-whatsapp-export",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One-off tool to export 2K Fest WhatsApp group members (name + phone) to CSV.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node pull-numbers.js"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}

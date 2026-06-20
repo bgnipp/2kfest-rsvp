@@ -1,0 +1,6 @@
+node_modules/
+# WhatsApp login session (sensitive — keeps you logged in)
+.wwebjs_auth/
+.wwebjs_cache/
+# Exported member list (contains personal phone numbers — never commit)
+whatsapp-members.csv

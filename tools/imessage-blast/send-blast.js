@@ -30,10 +30,19 @@ const { execFileSync } = require("child_process");
 // ---------------------------------------------------------------------------
 
 // {first} = first word of the name. {name} = full name.
+// NOTE: the RSVP link is sent as a SEPARATE follow-up message (see LINK below).
+// iMessage only renders a rich link preview when the URL is its own message and
+// includes the https:// scheme — embedding it mid-sentence shows plain text.
 const MESSAGE =
   "Hey {first}! Summer 2K Fest is July 17–20 🎶🪩 You're invited! " +
-  "Please RSVP here so we can plan: 2kfest.com/rsvp " +
-  "(invite-only — lmk if you wanna bring someone).";
+  "Please RSVP here to secure your spot and help us plan " +
+  "(limited space, invite-only — please DM me before inviting anyone else):";
+
+// Sent on its own, right after MESSAGE, so iMessage builds the poster preview.
+const LINK = "https://2kfest.com/rsvp";
+
+// Small pause between the text and the link so they arrive as two bubbles.
+const LINK_DELAY_MS = 2000;
 
 // Randomized pause between messages so it doesn't look like a spam burst.
 const MIN_DELAY_MS = 12000; // 12s
@@ -126,8 +135,9 @@ const rand = (min, max) => Math.floor(min + Math.random() * (max - min));
   console.log(`Missing a number (skip):  ${noPhone.length}`);
   if (sentAlready.size) console.log(`Already texted (skip):    ${sentAlready.size}`);
   console.log("");
-  console.log("Message template:");
-  console.log("  " + MESSAGE);
+  console.log("Message template (sent as TWO bubbles for the link preview):");
+  console.log("  1) " + MESSAGE);
+  console.log("  2) " + LINK);
   console.log("");
 
   if (noPhone.length) {
@@ -148,12 +158,15 @@ const rand = (min, max) => Math.floor(min + Math.random() * (max - min));
 
     if (!SEND) {
       console.log(`[DRY] → ${r.name} <${r.phone}>`);
-      console.log(`        ${msg}`);
+      console.log(`        msg:  ${msg}`);
+      console.log(`        link: ${LINK}`);
       continue;
     }
 
     try {
       sendOne(r.phone, msg);
+      await sleep(LINK_DELAY_MS);
+      sendOne(r.phone, LINK);
       logSent(r.name, r.phone);
       console.log(`✓ sent → ${r.name} <${r.phone}>`);
     } catch (err) {
